@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#D21317">
+<title>Agenda NQN · Rappachiani</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="robots" content="noindex, nofollow">
+<style>
+html,body{margin:0;height:100%;background:#14253D;color:#fff;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+#l{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:24px;box-sizing:border-box}
+#l img{width:96px;height:96px;border-radius:20px}
+#l h1{margin:0;font-size:34px;letter-spacing:.02em}
+#l h1 span{color:#D21317}
+#l p{margin:0;color:#B9C6D6}
+#l a{color:#fff;background:#D21317;padding:12px 24px;border-radius:10px;text-decoration:none;font-weight:600}
+</style>
+</head>
+<body>
+<div id="l"><img src="icon-192.png" alt=""><h1>AGENDA <span>NQN</span></h1><p>Cargando…</p></div>
+<script>
+/* Agenda NQN · versión web. Descarga las pantallas del servidor (las mismas que usa la app del celular)
+   y las muestra acá; los datos se leen y guardan en la misma base, en tiempo real. */
+(function () {
+  var EXEC = "https://script.google.com/macros/s/AKfycbwBa_v_YK3lc293ES1OoXzy65gWhYn8WcZaky7ly96IP_LNToQOa6BT0VOy0rhdkJ_T/exec";
+  var KEY = "agendaNQN.ui";
+  var shown = false;
+  function show(html) {
+    if (shown) return; shown = true;
+    if (document.readyState === "loading") { document.addEventListener("DOMContentLoaded", function () { write(html); }); return; }
+    write(html);
+  }
+  function write(html) {
+    var inj = '<script>window.AGENDA_EXEC=' + JSON.stringify(EXEC) + ';<\/script>' +
+      '<link rel="manifest" href="manifest.webmanifest"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">';
+    html = html.replace(/<head>/i, '<head>' + inj);
+    document.open(); document.write(html); document.close();
+  }
+  function fail() {
+    document.getElementById("l").innerHTML = '<img src="icon-192.png" alt=""><h1>AGENDA <span>NQN</span></h1>' +
+      '<p>No se pudo conectar. Revisá internet.</p><a href="">Reintentar</a>';
+  }
+  var cached = null;
+  try { cached = localStorage.getItem(KEY); } catch (e) { }
+  if (cached) show(cached);                       // abre al instante con la última versión guardada
+  var ctl = window.AbortController ? new AbortController() : null;
+  var t = setTimeout(function () { if (ctl) ctl.abort(); }, 20000);
+  fetch(EXEC + "?ui=1", { credentials: "omit", cache: "no-store", signal: ctl ? ctl.signal : undefined })
+    .then(function (r) { return r.text(); })
+    .then(function (h) {
+      clearTimeout(t);
+      if (h.indexOf("AndroidBridge") < 0) throw new Error("respuesta inválida");
+      try { localStorage.setItem(KEY, h); } catch (e) { }
+      show(h);                                    // si ya se mostró la guardada, la nueva se usa la próxima vez
+    })
+    .catch(function () { if (!shown) fail(); });
+})();
+</script>
+</body>
+</html>
