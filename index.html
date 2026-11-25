@@ -8,6 +8,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Agenda NQN">
 <meta name="robots" content="noindex, nofollow">
 <style>
 html,body{margin:0;height:100%;background:#14253D;color:#fff;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
@@ -35,7 +36,7 @@ html,body{margin:0;height:100%;background:#14253D;color:#fff;font-family:system-
   }
   function write(html) {
     var inj = '<script>window.AGENDA_EXEC=' + JSON.stringify(EXEC) + ';<\/script>' +
-      '<link rel="manifest" href="manifest.webmanifest"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">';
+      '<link rel="manifest" href="manifest.webmanifest"><link rel="icon" type="image/png" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Agenda NQN">';
     html = html.replace(/<head>/i, '<head>' + inj);
     document.open(); document.write(html); document.close();
   }
